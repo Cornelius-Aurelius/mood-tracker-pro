@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ultimate Mood Tracker — By Cornelius Aurelius</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* ----------------------------------------------------- */
+/* BASE + BRANDING (Black + Neon Blue)                   */
+/* ----------------------------------------------------- */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;}
+body{
+    background:#000000;
+    color:#d8eaff;
+    padding-bottom:100px;
+}
+header{
+    background:#000000;
+    padding:25px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    color:#4ab3ff;
+    text-shadow:0 0 10px #4ab3ff;
+    border-bottom:2px solid #1d1d1d;
+}
+
+/* ----------------------------------------------------- */
+/* CONTAINER                                              */
+/* ----------------------------------------------------- */
+.container{
+    max-width:900px;
+    margin:25px auto;
+    padding:22px;
+    background:#0c0f12;
+    border-radius:16px;
+    box-shadow:0 0 20px #05121f inset,0 0 15px #052e45;
+}
+
+/* ----------------------------------------------------- */
+/* MOOD BUTTON GRID                                       */
+/* ----------------------------------------------------- */
+.mood-grid{
+    display:grid;
+    gap:14px;
+    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+    margin-top:20px;
+}
+.mood-btn{
+    padding:18px;
+    background:#0f141a;
+    border:2px solid #11354a;
+    border-radius:12px;
+    cursor:pointer;
+    text-align:center;
+    color:#d8eaff;
+    font-size:18px;
+    transition:0.25s;
+    box-shadow:0 0 12px #042132;
+}
+.mood-btn:hover{
+    background:#0a1e30;
+    transform:scale(1.03);
+    border-color:#4ab3ff;
+    box-shadow:0 0 18px #4ab3ff;
+}
+
+/* ----------------------------------------------------- */
+/* LOADER                                                 */
+/* ----------------------------------------------------- */
+#loader{
+    display:none;
+    margin-top:25px;
+    text-align:center;
+}
+.spinner{
+    width:45px;
+    height:45px;
+    border:5px solid #0f2738;
+    border-top-color:#4ab3ff;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+    margin:0 auto 12px;
+}
+@keyframes spin{100%{transform:rotate(360deg);}}
+.loading-text{
+    color:#4ab3ff;
+    font-size:18px;
+    animation:blink 1.2s infinite steps(2,start);
+}
+@keyframes blink{50%{opacity:0.5;}}
+
+/* ----------------------------------------------------- */
+/* RESULTS + CARDS                                       */
+/* ----------------------------------------------------- */
+#resultArea{
+    display:none;
+    margin-top:30px;
+    padding:18px;
+    border-radius:14px;
+    background:#0a0d10;
+    box-shadow:0 0 12px #051c2b inset;
+    animation:fadeIn 0.5s ease;
+}
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+}
+.card{
+    margin-top:18px;
+    padding:16px;
+    border-radius:12px;
+    background:#0f141a;
+    box-shadow:0 0 12px #061d2a inset;
+}
+
+/* ----------------------------------------------------- */
+/* CHART CANVAS                                          */
+/* ----------------------------------------------------- */
+canvas{
+    margin-top:20px;
+    width:100%;
+    height:180px;
+    background:#03070a;
+    border-radius:12px;
+    box-shadow:0 0 12px #050f18 inset;
+}
+
+/* ----------------------------------------------------- */
+/* FOOTER                                                 */
+/* ----------------------------------------------------- */
+footer{
+    margin-top:40px;
+    text-align:center;
+    opacity:0.7;
+    font-size:14px;
+    color:#5caeff;
+}
+footer a{color:#4ab3ff;font-weight:bold;}
+</style>
+</head>
+
+<body>
+
+<header>Ultimate Mood Tracker</header>
+
+<div class="container">
+    <p>Select your mood for today. This tool analyzes emotional patterns, stress signals, clarity, burnout risk, and generates insights + history charts.</p>
+
+    <div class="mood-grid">
+        <div class="mood-btn" onclick="logMood('😄','happy')">😄 Happy</div>
+        <div class="mood-btn" onclick="logMood('🙂','calm')">🙂 Calm</div>
+        <div class="mood-btn" onclick="logMood('😐','neutral')">😐 Neutral</div>
+        <div class="mood-btn" onclick="logMood('😕','confused')">😕 Confused</div>
+        <div class="mood-btn" onclick="logMood('😔','sad')">😔 Sad</div>
+        <div class="mood-btn" onclick="logMood('😡','angry')">😡 Angry</div>
+        <div class="mood-btn" onclick="logMood('😫','stressed')">😫 Stressed</div>
+        <div class="mood-btn" onclick="logMood('😞','low')">😞 Low Energy</div>
+        <div class="mood-btn" onclick="logMood('🤩','excited')">🤩 Excited</div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <div class="loading-text">Analyzing...</div>
+    </div>
+
+    <!-- Results -->
+    <div id="resultArea"></div>
+
+    <!-- Chart -->
+    <canvas id="moodChart"></canvas>
+</div>
+
+<footer>
+    Created by <b>CORNELIUS AURELIUS</b><br>
+    <a href="https://zenodo.org/records/17362534" target="_blank">The Peace License</a>
+</footer>
+
+
+<script>
+/* ----------------------------- */
+/* MOOD ANALYSIS ENGINE          */
+/* ----------------------------- */
+function logMood(emoji,mood) {
+    document.getElementById("loader").style.display="block";
+    document.getElementById("resultArea").style.display="none";
+
+    setTimeout(()=>processMood(emoji,mood),1000);
+}
+
+function processMood(emoji,mood){
+    document.getElementById("loader").style.display="none";
+
+    saveMood(mood);
+
+    let insight = createInsight(mood);
+
+    document.getElementById("resultArea").innerHTML=`
+        <div class="card">
+            <h3 style="color:#4ab3ff;">Today's Mood: ${emoji} ${capitalize(mood)}</h3>
+            <p>${insight.text}</p>
+        </div>
+
+        <div class="card">
+            <h3 style="color:#4ab3ff;">Emotional Stats</h3>
+            <p><b>Stress:</b> ${insight.stress}/10</p>
+            <p><b>Clarity:</b> ${insight.clarity}/10</p>
+            <p><b>Energy:</b> ${insight.energy}/10</p>
+            <p><b>Burnout Risk:</b> ${insight.burnout}%</p>
+        </div>
+
+        <div class="card">
+            <h3 style="color:#4ab3ff;">Advice</h3>
+            <p>${insight.advice}</p>
+        </div>
+    `;
+
+    document.getElementById("resultArea").style.display="block";
+
+    drawChart();
+}
+
+function capitalize(t){return t.charAt(0).toUpperCase()+t.slice(1);}
+
+/* ----------------------------- */
+/* INSIGHT LOGIC                 */
+/* ----------------------------- */
+function createInsight(m){
+    let stress=0,clarity=0,energy=0,burnout=0;
+    let text="",advice="";
+
+    switch(m){
+        case "happy":
+            stress=1; clarity=9; energy=9; advice="Keep doing what works. Add gratitude journaling for even more clarity.";
+            text="You’re emotionally elevated and mentally open. Productivity and social connection are enhanced.";
+        break;
+
+        case "calm":
+            stress=2; clarity=8; energy=7;
+            advice="Excellent baseline state. Use calmness to make important decisions.";
+            text="Balanced emotional state. Good for planning and reflection.";
+        break;
+
+        case "neutral":
+            stress=3; clarity=6; energy=6;
+            advice="Try a small positive activity: music, short walk, fresh air.";
+            text="Your mind is steady, but could rise with minor uplifting actions.";
+        break;
+
+        case "confused":
+            stress=5; clarity=3; energy=5;
+            advice="Write down what’s confusing you. Clarity emerges by externalizing thoughts.";
+            text="Mental fog detected. You may be juggling conflicting tasks or emotions.";
+        break;
+
+        case "sad":
+            stress=6; clarity=4; energy=3;
+            advice="Do something gentle: warm drink, low-pressure walk, comforting music.";
+            text="Emotional heaviness detected. Treat yourself with patience.";
+        break;
+
+        case "angry":
+            stress=8; clarity=3; energy=7;
+            advice="Slow breathing works instantly. Delay decisions until calm.";
+            text="High emotional charge. Avoid confrontation or major decisions.";
+        break;
+
+        case "stressed":
+            stress=8; clarity=4; energy=4;
+            advice="Break tasks into tiny steps. Reduce input. Hydrate and stretch.";
+            text="Stress load elevated. Cognitive bandwidth reduced.";
+        break;
+
+        case "low":
+            stress=4; clarity=5; energy=2;
+            advice="Boost energy gently: hydration, light movement, sunlight exposure.";
+            text="Energy depletion detected. Consider resting or resetting your pace.";
+        break;
+
+        case "excited":
+            stress=2; clarity=7; energy=10;
+            advice="Channel your excitement into productive momentum.";
+            text="Peak emotional state. Great for creativity and action.";
+        break;
+    }
+
+    burnout = Math.round(((stress*2) + (10-energy)) * 3);
+
+    return {stress,clarity,energy,burnout,text,advice};
+}
+
+/* ----------------------------- */
+/* LOCAL STORAGE HISTORY         */
+/* ----------------------------- */
+function saveMood(m){
+    let log = JSON.parse(localStorage.getItem("moodLog") || "[]");
+    log.push({m, date: new Date().toLocaleDateString()});
+    if(log.length>30) log.shift();
+    localStorage.setItem("moodLog", JSON.stringify(log));
+}
+
+/* ----------------------------- */
+/* MOOD CHART DRAWING            */
+/* ----------------------------- */
+function drawChart(){
+    let log = JSON.parse(localStorage.getItem("moodLog")||"[]");
+    const ctx = document.getElementById("moodChart").getContext("2d");
+
+    ctx.clearRect(0,0,1000,500);
+
+    const scale = {happy:9,calm:8,neutral:5,confused:4,sad:2,angry:3,stressed:2,low:2,excited:10};
+
+    ctx.lineWidth=3;
+    ctx.strokeStyle="#4ab3ff";
+    ctx.shadowColor="#4ab3ff";
+    ctx.shadowBlur=10;
+
+    ctx.beginPath();
+    log.forEach((entry,i)=>{
+        const moodValue = scale[entry.m]||5;
+        const x = (i/log.length) * ctx.canvas.width;
+        const y = ctx.canvas.height - (moodValue/10 * ctx.canvas.height);
+
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+}
+</script>
+
+</body>
+</html>
