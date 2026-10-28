@@ -1,0 +1,11 @@
+import test from "node:test";import assert from "node:assert/strict";import {readFileSync,existsSync} from "node:fs";
+const html=readFileSync("index.html","utf8"),app=readFileSync("app.mjs","utf8");
+test("original creator named on site",()=>assert.match(html,/Created? by|Designed and created by/i));
+test("correct canonical URL",()=>assert.match(html,/rel="canonical" href="https:\/\/cornelius-aurelius.github.io\/mood-tracker-pro\/"/));
+test("structured person and app author",()=>{const match=html.match(/<script type="application\/ld\+json">([^<]+)<\/script>/);assert.ok(match);const g=JSON.parse(match[1])["@graph"];assert.ok(g.some(x=>x["@type"]==="Person"&&x.name==="Cornelius Aurelius"));assert.ok(g.some(x=>x["@type"]==="WebApplication"&&x.creator));});
+test("all referenced assets exist",()=>{for(const p of ["styles.css","app.mjs","core.mjs","robots.txt","sitemap.xml","llms.txt","assets/favicon.svg","assets/social-preview.svg"])assert.ok(existsSync(p),p);});
+test("no public source link",()=>assert.doesNotMatch(html,/View source on GitHub|github.com\/Cornelius-Aurelius\/mood-tracker-pro/i));
+test("privacy-safe rendering",()=>{assert.ok(app.includes("textContent"));assert.doesNotMatch(app,/\.innerHTML\s*=/);});
+test("original Zenodo reference preserved",()=>assert.match(html,/zenodo.org\/records\/17362534/));
+test("legacy data migration retains date label",()=>{assert.ok(app.includes("migrateLegacy(old)"));assert.ok(app.includes("localStorage.removeItem(LEGACY_KEY)"));});
+test("original site dated metadata was not fabricated",()=>assert.doesNotMatch(html,/dateModified|datePublished/));
