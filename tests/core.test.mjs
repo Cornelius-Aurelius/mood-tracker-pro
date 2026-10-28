@@ -1,0 +1,18 @@
+import test from "node:test";import assert from "node:assert/strict";
+import {MOODS,localDay,validDay,migrateLegacy,normalizeStore,normalizeEntry,addEntry,removeEntry,summary,recentDays,exportCSV} from "../core.mjs";
+const today="2026-10-28";
+const entry=(id,day=today,mood="calm")=>({id,day,dateLabel:day,mood,stress:2,energy:4,note:"Daily note",tags:[],legacy:false});
+test("nine accessible mood choices",()=>assert.equal(MOODS.length,9));
+test("valid calendar dates",()=>{assert.equal(validDay(today),true);assert.equal(validDay("2026-02-30"),false);assert.equal(validDay("28/10/2026"),false);});
+test("legacy timestamps copied byte-for-byte",()=>{const a=migrateLegacy(JSON.stringify([{m:"happy",date:"28/10/2024"},{m:"sad",date:"4/9/2025"}]));assert.deepEqual(a.map(x=>x.dateLabel),["28/10/2024","4/9/2025"]);assert.deepEqual(a.map(x=>x.day),[null,null]);});
+test("malformed legacy records ignored safely",()=>assert.equal(migrateLegacy("invalid").length,0));
+test("legacy records do not invent stress or medical analysis",()=>{const a=migrateLegacy([{m:"angry",date:"10/02/2024"}]);assert.equal(a[0].stress,null);assert.equal(a[0].energy,null);});
+test("new record values are validated",()=>{const a=normalizeEntry({...entry("x"),stress:40,energy:0,note:"x".repeat(2000)});assert.equal(a.stress,null);assert.equal(a.energy,null);assert.equal(a.note.length,1400);});
+test("unsafe tags and invalid records do not enter storage",()=>{assert.equal(normalizeEntry({...entry("x"),mood:"unknown"}),null);assert.equal(normalizeStore({version:3,entries:[]}),null);});
+test("duplicate records not saved",()=>assert.equal(addEntry([entry("x")],entry("x")).length,1));
+test("entry deletion",()=>assert.deepEqual(removeEntry([entry("x"),entry("y")],"x").map(x=>x.id),["y"]));
+test("streak based only on actual recorded days",()=>{const v=[entry("a","2026-10-27"),entry("b","2026-10-26")];assert.equal(summary(v,today).streak,2);});
+test("no fabricated scores from mood",()=>{const v=[{...entry("a"),stress:null,energy:null}];assert.equal(summary(v,today).avgStress,null);});
+test("calendar counts actual entries",()=>{const a=recentDays([entry("a"),entry("b")],today,7);assert.equal(a.at(-1).count,2);assert.equal(a.length,7);});
+test("CSV quotes and escapes user notes",()=>{const s=exportCSV([{...entry("x"),note:'A,"B"'}]);assert.ok(s.includes('"A,""B"""'));});
+test("local day displays stable local calendar date",()=>assert.equal(localDay(new Date(2026,9,28,12)),today));
