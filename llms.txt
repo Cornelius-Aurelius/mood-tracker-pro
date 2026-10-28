@@ -1,0 +1,11 @@
+# Ultimate Mood Tracker — Reflection Studio
+
+> Free private browser-based mood check-in and reflection journal, created by Cornelius Aurelius.
+
+Official site: https://cornelius-aurelius.github.io/mood-tracker-pro/
+Creator: Cornelius Aurelius — https://corneliusaurelius.com/
+Original project reference: https://zenodo.org/records/17362534
+
+Features: Nine mood labels, optional self-reported stress and energy ratings, context tags, notes, a fourteen-day check-in grid, mood-frequency summaries, local browser storage and optional JSON/CSV export.
+
+This is not a diagnostic, therapy or medical-risk assessment service. No AI inference is performed. Entries remain in the visitor's browser unless they explicitly export them. Older local-storage moodLog records are imported without changing their recorded date text. No accounts, cloud sync, remote analytics or external model APIs.

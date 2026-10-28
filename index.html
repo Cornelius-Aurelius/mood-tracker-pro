@@ -1,334 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-<meta charset="UTF-8">
-<title>Ultimate Mood Tracker — By Cornelius Aurelius</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-/* ----------------------------------------------------- */
-/* BASE + BRANDING (Black + Neon Blue)                   */
-/* ----------------------------------------------------- */
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;}
-body{
-    background:#000000;
-    color:#d8eaff;
-    padding-bottom:100px;
-}
-header{
-    background:#000000;
-    padding:25px;
-    text-align:center;
-    font-size:28px;
-    font-weight:bold;
-    color:#4ab3ff;
-    text-shadow:0 0 10px #4ab3ff;
-    border-bottom:2px solid #1d1d1d;
-}
-
-/* ----------------------------------------------------- */
-/* CONTAINER                                              */
-/* ----------------------------------------------------- */
-.container{
-    max-width:900px;
-    margin:25px auto;
-    padding:22px;
-    background:#0c0f12;
-    border-radius:16px;
-    box-shadow:0 0 20px #05121f inset,0 0 15px #052e45;
-}
-
-/* ----------------------------------------------------- */
-/* MOOD BUTTON GRID                                       */
-/* ----------------------------------------------------- */
-.mood-grid{
-    display:grid;
-    gap:14px;
-    grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-    margin-top:20px;
-}
-.mood-btn{
-    padding:18px;
-    background:#0f141a;
-    border:2px solid #11354a;
-    border-radius:12px;
-    cursor:pointer;
-    text-align:center;
-    color:#d8eaff;
-    font-size:18px;
-    transition:0.25s;
-    box-shadow:0 0 12px #042132;
-}
-.mood-btn:hover{
-    background:#0a1e30;
-    transform:scale(1.03);
-    border-color:#4ab3ff;
-    box-shadow:0 0 18px #4ab3ff;
-}
-
-/* ----------------------------------------------------- */
-/* LOADER                                                 */
-/* ----------------------------------------------------- */
-#loader{
-    display:none;
-    margin-top:25px;
-    text-align:center;
-}
-.spinner{
-    width:45px;
-    height:45px;
-    border:5px solid #0f2738;
-    border-top-color:#4ab3ff;
-    border-radius:50%;
-    animation:spin 1s linear infinite;
-    margin:0 auto 12px;
-}
-@keyframes spin{100%{transform:rotate(360deg);}}
-.loading-text{
-    color:#4ab3ff;
-    font-size:18px;
-    animation:blink 1.2s infinite steps(2,start);
-}
-@keyframes blink{50%{opacity:0.5;}}
-
-/* ----------------------------------------------------- */
-/* RESULTS + CARDS                                       */
-/* ----------------------------------------------------- */
-#resultArea{
-    display:none;
-    margin-top:30px;
-    padding:18px;
-    border-radius:14px;
-    background:#0a0d10;
-    box-shadow:0 0 12px #051c2b inset;
-    animation:fadeIn 0.5s ease;
-}
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
-}
-.card{
-    margin-top:18px;
-    padding:16px;
-    border-radius:12px;
-    background:#0f141a;
-    box-shadow:0 0 12px #061d2a inset;
-}
-
-/* ----------------------------------------------------- */
-/* CHART CANVAS                                          */
-/* ----------------------------------------------------- */
-canvas{
-    margin-top:20px;
-    width:100%;
-    height:180px;
-    background:#03070a;
-    border-radius:12px;
-    box-shadow:0 0 12px #050f18 inset;
-}
-
-/* ----------------------------------------------------- */
-/* FOOTER                                                 */
-/* ----------------------------------------------------- */
-footer{
-    margin-top:40px;
-    text-align:center;
-    opacity:0.7;
-    font-size:14px;
-    color:#5caeff;
-}
-footer a{color:#4ab3ff;font-weight:bold;}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e20">
+  <meta name="description" content="Ultimate Mood Tracker — Reflection Studio by Cornelius Aurelius. A private, accessible, free mood journal with check-ins, notes, history, gentle patterns and optional backup.">
+  <meta name="author" content="Cornelius Aurelius">
+  <meta name="creator" content="Cornelius Aurelius">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <title>Ultimate Mood Tracker — Reflection Studio | Cornelius Aurelius</title>
+  <link rel="canonical" href="https://cornelius-aurelius.github.io/mood-tracker-pro/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ultimate Mood Tracker — Reflection Studio">
+  <meta property="og:description" content="A private space to notice your mood, add reflections and explore your own check-in patterns. Created by Cornelius Aurelius.">
+  <meta property="og:url" content="https://cornelius-aurelius.github.io/mood-tracker-pro/">
+  <meta property="og:image" content="https://cornelius-aurelius.github.io/mood-tracker-pro/assets/social-preview.svg">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://corneliusaurelius.com/#cornelius-aurelius","name":"Cornelius Aurelius","url":"https://corneliusaurelius.com/"},{"@type":"WebApplication","@id":"https://cornelius-aurelius.github.io/mood-tracker-pro/#app","name":"Ultimate Mood Tracker — Reflection Studio","url":"https://cornelius-aurelius.github.io/mood-tracker-pro/","description":"Privacy-conscious mood check-in and reflection journal with optional browser-local storage, historical review and backups. Not a medical diagnostic tool.","applicationCategory":"LifestyleApplication","operatingSystem":"Any modern web browser","isAccessibleForFree":true,"inLanguage":"en-GB","creator":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"},"author":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"},"publisher":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"}},{"@type":"WebPage","@id":"https://cornelius-aurelius.github.io/mood-tracker-pro/#webpage","url":"https://cornelius-aurelius.github.io/mood-tracker-pro/","name":"Ultimate Mood Tracker — Reflection Studio by Cornelius Aurelius","mainEntity":{"@id":"https://cornelius-aurelius.github.io/mood-tracker-pro/#app"},"creator":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"},"inLanguage":"en-GB"}]}</script>
+  <script type="module" src="app.mjs"></script>
 </head>
-
 <body>
-
-<header>Ultimate Mood Tracker</header>
-
-<div class="container">
-    <p>Select your mood for today. This tool analyzes emotional patterns, stress signals, clarity, burnout risk, and generates insights + history charts.</p>
-
-    <div class="mood-grid">
-        <div class="mood-btn" onclick="logMood('😄','happy')">😄 Happy</div>
-        <div class="mood-btn" onclick="logMood('🙂','calm')">🙂 Calm</div>
-        <div class="mood-btn" onclick="logMood('😐','neutral')">😐 Neutral</div>
-        <div class="mood-btn" onclick="logMood('😕','confused')">😕 Confused</div>
-        <div class="mood-btn" onclick="logMood('😔','sad')">😔 Sad</div>
-        <div class="mood-btn" onclick="logMood('😡','angry')">😡 Angry</div>
-        <div class="mood-btn" onclick="logMood('😫','stressed')">😫 Stressed</div>
-        <div class="mood-btn" onclick="logMood('😞','low')">😞 Low Energy</div>
-        <div class="mood-btn" onclick="logMood('🤩','excited')">🤩 Excited</div>
+<a class="skip-link" href="#checkin">Skip to mood check-in</a>
+<div class="ambient ambient-one" aria-hidden="true"></div><div class="ambient ambient-two" aria-hidden="true"></div>
+<header class="topbar">
+ <div class="shell nav-inner">
+   <a class="brand" href="#top" aria-label="Ultimate Mood Tracker home"><span class="brand-icon" aria-hidden="true">◈</span><span>MOOD<span class="brand-accent">/</span>STUDIO<small>by Cornelius Aurelius</small></span></a>
+   <nav aria-label="Main navigation"><a href="#checkin">Check in</a><a href="#patterns">Patterns</a><a href="#journal">Journal</a><a href="#privacy">Privacy</a></nav>
+ </div>
+</header>
+<main id="top" class="shell">
+ <section class="hero" aria-labelledby="hero-title">
+   <div class="hero-copy"><span class="eyebrow"><span class="status-dot" aria-hidden="true"></span> YOUR PRIVATE REFLECTION SPACE</span>
+    <h1 id="hero-title">Feel it. <span>Notice it.</span><br>Make room for it.</h1>
+    <p>Some days are easy to name. Others aren't. Capture a moment, notice patterns over time and reflect at your own pace—without judgement or pressure.</p>
+    <div class="hero-actions"><a class="primary-link" href="#checkin">Start a check-in <span aria-hidden="true">↗</span></a><a class="text-link" href="#how-it-works">How it works <span aria-hidden="true">↓</span></a></div>
+   </div>
+   <div class="orbital-panel" aria-label="Decorative illustration of a calm pulsing journal"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="core-orb">✦</div><div class="orbit-caption"><span>SPACE TO REFLECT</span><strong>One moment at a time</strong></div></div>
+ </section>
+ <section id="how-it-works" class="intro-steps" aria-label="How the tracker works">
+  <div><span class="step-num">01</span><strong>Choose your mood</strong><span>There's no right answer.</span></div>
+  <div><span class="step-num">02</span><strong>Add context</strong><span>Optional notes and self-ratings.</span></div>
+  <div><span class="step-num">03</span><strong>Notice patterns</strong><span>Only from what you record.</span></div>
+ </section>
+ <section class="workspace" id="checkin" aria-labelledby="checkin-heading">
+  <div class="section-heading"><div><span class="eyebrow">THE DAILY CHECK-IN</span><h2 id="checkin-heading">How are you feeling?</h2><p>Choose the word that feels closest right now. Mixed feelings are welcome; you can record more than one check-in.</p></div><div class="today-pill" id="todayLabel" aria-live="polite">Today</div></div>
+  <div class="workspace-grid">
+   <form id="moodForm" class="panel editor" novalidate>
+    <fieldset class="mood-fieldset"><legend>Choose a feeling <span class="required">*</span></legend><div class="mood-grid" id="moodGrid"></div></fieldset>
+    <div class="entry-cols">
+      <label class="field">Stress, if you'd like to rate it <small>Optional, self-reported (1–5)</small><select id="stress"><option value="">Not specified</option><option value="1">1 — Very little</option><option value="2">2 — A little</option><option value="3">3 — Some</option><option value="4">4 — A lot</option><option value="5">5 — Very high</option></select></label>
+      <label class="field">Energy, if you'd like to rate it <small>Optional, self-reported (1–5)</small><select id="energy"><option value="">Not specified</option><option value="1">1 — Very low</option><option value="2">2 — Low</option><option value="3">3 — In between</option><option value="4">4 — High</option><option value="5">5 — Very high</option></select></label>
     </div>
-
-    <!-- Loader -->
-    <div id="loader">
-        <div class="spinner"></div>
-        <div class="loading-text">Analyzing...</div>
-    </div>
-
-    <!-- Results -->
-    <div id="resultArea"></div>
-
-    <!-- Chart -->
-    <canvas id="moodChart"></canvas>
-</div>
-
-<footer>
-    Created by <b>CORNELIUS AURELIUS</b><br>
-    <a href="https://zenodo.org/records/17362534" target="_blank">The Peace License</a>
-</footer>
-
-
-<script>
-/* ----------------------------- */
-/* MOOD ANALYSIS ENGINE          */
-/* ----------------------------- */
-function logMood(emoji,mood) {
-    document.getElementById("loader").style.display="block";
-    document.getElementById("resultArea").style.display="none";
-
-    setTimeout(()=>processMood(emoji,mood),1000);
-}
-
-function processMood(emoji,mood){
-    document.getElementById("loader").style.display="none";
-
-    saveMood(mood);
-
-    let insight = createInsight(mood);
-
-    document.getElementById("resultArea").innerHTML=`
-        <div class="card">
-            <h3 style="color:#4ab3ff;">Today's Mood: ${emoji} ${capitalize(mood)}</h3>
-            <p>${insight.text}</p>
-        </div>
-
-        <div class="card">
-            <h3 style="color:#4ab3ff;">Emotional Stats</h3>
-            <p><b>Stress:</b> ${insight.stress}/10</p>
-            <p><b>Clarity:</b> ${insight.clarity}/10</p>
-            <p><b>Energy:</b> ${insight.energy}/10</p>
-            <p><b>Burnout Risk:</b> ${insight.burnout}%</p>
-        </div>
-
-        <div class="card">
-            <h3 style="color:#4ab3ff;">Advice</h3>
-            <p>${insight.advice}</p>
-        </div>
-    `;
-
-    document.getElementById("resultArea").style.display="block";
-
-    drawChart();
-}
-
-function capitalize(t){return t.charAt(0).toUpperCase()+t.slice(1);}
-
-/* ----------------------------- */
-/* INSIGHT LOGIC                 */
-/* ----------------------------- */
-function createInsight(m){
-    let stress=0,clarity=0,energy=0,burnout=0;
-    let text="",advice="";
-
-    switch(m){
-        case "happy":
-            stress=1; clarity=9; energy=9; advice="Keep doing what works. Add gratitude journaling for even more clarity.";
-            text="You’re emotionally elevated and mentally open. Productivity and social connection are enhanced.";
-        break;
-
-        case "calm":
-            stress=2; clarity=8; energy=7;
-            advice="Excellent baseline state. Use calmness to make important decisions.";
-            text="Balanced emotional state. Good for planning and reflection.";
-        break;
-
-        case "neutral":
-            stress=3; clarity=6; energy=6;
-            advice="Try a small positive activity: music, short walk, fresh air.";
-            text="Your mind is steady, but could rise with minor uplifting actions.";
-        break;
-
-        case "confused":
-            stress=5; clarity=3; energy=5;
-            advice="Write down what’s confusing you. Clarity emerges by externalizing thoughts.";
-            text="Mental fog detected. You may be juggling conflicting tasks or emotions.";
-        break;
-
-        case "sad":
-            stress=6; clarity=4; energy=3;
-            advice="Do something gentle: warm drink, low-pressure walk, comforting music.";
-            text="Emotional heaviness detected. Treat yourself with patience.";
-        break;
-
-        case "angry":
-            stress=8; clarity=3; energy=7;
-            advice="Slow breathing works instantly. Delay decisions until calm.";
-            text="High emotional charge. Avoid confrontation or major decisions.";
-        break;
-
-        case "stressed":
-            stress=8; clarity=4; energy=4;
-            advice="Break tasks into tiny steps. Reduce input. Hydrate and stretch.";
-            text="Stress load elevated. Cognitive bandwidth reduced.";
-        break;
-
-        case "low":
-            stress=4; clarity=5; energy=2;
-            advice="Boost energy gently: hydration, light movement, sunlight exposure.";
-            text="Energy depletion detected. Consider resting or resetting your pace.";
-        break;
-
-        case "excited":
-            stress=2; clarity=7; energy=10;
-            advice="Channel your excitement into productive momentum.";
-            text="Peak emotional state. Great for creativity and action.";
-        break;
-    }
-
-    burnout = Math.round(((stress*2) + (10-energy)) * 3);
-
-    return {stress,clarity,energy,burnout,text,advice};
-}
-
-/* ----------------------------- */
-/* LOCAL STORAGE HISTORY         */
-/* ----------------------------- */
-function saveMood(m){
-    let log = JSON.parse(localStorage.getItem("moodLog") || "[]");
-    log.push({m, date: new Date().toLocaleDateString()});
-    if(log.length>30) log.shift();
-    localStorage.setItem("moodLog", JSON.stringify(log));
-}
-
-/* ----------------------------- */
-/* MOOD CHART DRAWING            */
-/* ----------------------------- */
-function drawChart(){
-    let log = JSON.parse(localStorage.getItem("moodLog")||"[]");
-    const ctx = document.getElementById("moodChart").getContext("2d");
-
-    ctx.clearRect(0,0,1000,500);
-
-    const scale = {happy:9,calm:8,neutral:5,confused:4,sad:2,angry:3,stressed:2,low:2,excited:10};
-
-    ctx.lineWidth=3;
-    ctx.strokeStyle="#4ab3ff";
-    ctx.shadowColor="#4ab3ff";
-    ctx.shadowBlur=10;
-
-    ctx.beginPath();
-    log.forEach((entry,i)=>{
-        const moodValue = scale[entry.m]||5;
-        const x = (i/log.length) * ctx.canvas.width;
-        const y = ctx.canvas.height - (moodValue/10 * ctx.canvas.height);
-
-        if(i===0) ctx.moveTo(x,y);
-        else ctx.lineTo(x,y);
-    });
-    ctx.stroke();
-}
-</script>
-
+    <fieldset class="tags-field"><legend>What may have influenced today? <small>(optional)</small></legend><div class="tag-grid" id="tagGrid">
+      <label><input type="checkbox" value="Work"><span>Work</span></label><label><input type="checkbox" value="Rest"><span>Rest</span></label>
+      <label><input type="checkbox" value="People"><span>People</span></label><label><input type="checkbox" value="Movement"><span>Movement</span></label>
+      <label><input type="checkbox" value="Other"><span>Other</span></label></div></fieldset>
+    <label class="field" for="note">A note to yourself <small>Optional · private to this browser</small></label>
+    <textarea id="note" rows="4" maxlength="1400" placeholder="What's on your mind? What helped, or what do you need today?"></textarea>
+    <p class="muted small">Your words aren't analysed by an AI service or sent to our servers. Only you decide what to record.</p>
+    <div class="form-actions"><button type="submit" class="button button-primary" id="saveBtn">Save check-in <span aria-hidden="true">↗</span></button><button type="button" class="button button-ghost" id="resetBtn">Clear form</button></div>
+    <p class="status" id="formStatus" role="status" aria-live="polite"></p>
+   </form>
+   <aside class="panel insights" aria-labelledby="insights-heading"><span class="eyebrow">YOUR DASHBOARD</span><h3 id="insights-heading">A gentle overview</h3><p class="muted">These numbers describe your entries, not your mental health.</p>
+    <div class="stat-grid"><div class="stat"><strong id="totalCount">0</strong><span>Total check-ins</span></div><div class="stat"><strong id="daysCount">0</strong><span>Days recorded</span></div><div class="stat"><strong id="streakCount">0</strong><span>Recent day streak</span></div></div>
+    <div class="summary-box"><span class="micro-label">YOUR REFLECTION</span><p id="insightText">Start with one check-in. Your journal will grow at your own pace.</p></div>
+    <div class="rating-summary"><div><span>Your reported stress</span><strong id="stressAvg">—</strong></div><div><span>Your reported energy</span><strong id="energyAvg">—</strong></div></div>
+    <p class="micro-note">Averages appear only if you voluntarily record ratings. No burnout score or diagnosis is calculated.</p>
+   </aside>
+  </div>
+ </section>
+ <section id="patterns" class="section-block" aria-labelledby="patterns-title"><div class="section-heading"><div><span class="eyebrow">OBSERVATIONS, NOT JUDGEMENTS</span><h2 id="patterns-title">Your patterns, at a glance.</h2><p>Look for what you recognise. Each mood is a valid experience, not a score to win.</p></div></div>
+  <div class="patterns-grid"><div class="panel chart-card"><h3>The past 14 days</h3><p class="muted small">A dot indicates that you recorded a check-in that day. Older imported dates are kept unchanged and shown in your journal.</p><div class="day-track" id="dayTrack" aria-label="Fourteen-day check-in activity"></div></div>
+  <div class="panel chart-card"><h3>Moods you've recorded</h3><p class="muted small">A simple count of your chosen labels, including older entries.</p><div id="moodBars" class="mood-bars" aria-label="Mood frequency bar chart"></div></div></div>
+ </section>
+ <section id="journal" class="section-block journal" aria-labelledby="journal-title"><div class="section-heading"><div><span class="eyebrow">YOUR OWN WORDS</span><h2 id="journal-title">The reflection journal</h2><p>Review, edit or remove entries whenever you like. You stay in control.</p></div><label class="field filter-field">Filter by mood <select id="moodFilter"><option value="">All moods</option></select></label></div>
+  <div class="panel"><div id="journalList" class="journal-list" aria-live="polite"><p class="muted">No check-ins recorded yet.</p></div></div>
+ </section>
+ <section id="privacy" class="section-block privacy-section" aria-labelledby="privacy-title"><div class="section-heading"><div><span class="eyebrow">YOUR INFORMATION, YOUR CHOICE</span><h2 id="privacy-title">Privacy &amp; backups.</h2><p>Entries are stored only in this browser's local storage. No account or cloud sync is involved.</p></div></div>
+  <div class="panel privacy-layout"><div><h3>Keep control of your journal</h3><p>Browser storage is not encrypted. Other people using the same browser profile may be able to read it. Clearing browsing data or switching devices may erase it.</p><p id="legacyNotice" class="muted small">If you used the previous version, its saved dates and mood labels can be carried forward without rewriting their original date text.</p><div class="privacy-actions"><button id="exportJson" class="button button-outline" type="button">Download backup (.json)</button><button id="exportCSV" class="button button-outline" type="button">Export table (.csv)</button><label class="button button-outline import-label" for="importFile">Import backup<input type="file" id="importFile" accept=".json,application/json" hidden></label><button id="clearAll" class="button button-danger" type="button">Delete all local entries</button></div><p id="dataStatus" role="status" aria-live="polite" class="small"></p></div><div class="privacy-note"><span aria-hidden="true">◌</span><strong>A journal, not a diagnosis</strong><p>This tool doesn't assess burnout, predict wellbeing or provide therapy. If your feelings become hard to manage, consider speaking with someone you trust or a qualified professional. If there's immediate danger, contact local emergency services.</p></div></div>
+ </section>
+</main>
+<footer><div class="shell footer-inner"><div><strong>ULTIMATE MOOD TRACKER</strong><p>Designed and created by <a href="https://corneliusaurelius.com/" rel="author">Cornelius Aurelius</a>.</p><p><a href="https://zenodo.org/records/17362534" rel="noopener noreferrer" target="_blank">The Peace License</a></p></div><p>Reflection Studio · Free to use · No login needed</p></div></footer>
 </body>
 </html>
