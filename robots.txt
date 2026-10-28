@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cornelius-aurelius.github.io/mood-tracker-pro/sitemap.xml
